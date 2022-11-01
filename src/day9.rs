@@ -1,82 +1,70 @@
-#[derive(Debug)]
-struct ExpandLen {
-    value: Vec<char>,
+struct Compressor {
+    start: usize,
+    end: usize,
+    payload: String,
     times: usize,
-    total_len: usize,
 }
 
-impl ExpandLen {
-    fn new(input: &str) -> Self {
-        // Skip opening parens
-        let char_iter = input.chars().skip(1);
-        let len = char_iter
-            .clone()
-            .take_while(|ch| ch != &'x')
-            .collect::<String>()
-            .parse::<usize>()
+impl Compressor {
+    fn new(input: &str, start: usize, end: usize) -> Self {
+        let (len_to_catch, times) = input[start + 1..end]
+            .split_once('x')
+            .map(|(l, r)| (l.parse::<usize>().unwrap(), r.parse::<usize>().unwrap()))
             .unwrap();
-        let times = char_iter
-            .clone()
-            .skip_while(|chr| chr != &'x')
-            .skip(1)
-            .take_while(|chr| chr != &')')
-            .collect::<String>()
-            .parse()
-            .unwrap();
-        let value = char_iter
-            .clone()
-            .skip_while(|chr| chr != &')')
-            .skip(1)
-            .take(len)
-            .collect();
-        let total_len = char_iter.clone().take_while(|chr| chr != &')').count() + 2 + len;
+        let payload = input.chars().skip(end + 1).take(len_to_catch).collect();
         Self {
-            value,
+            start,
+            end,
+            payload,
             times,
-            total_len,
         }
     }
 
-    fn expand(&self) -> usize {
-        self.value.len() * self.times
+    fn len(&self, recurse: bool) -> usize {
+        if !recurse {
+            self.times * self.payload.len()
+        } else {
+            self.times * estimate_len(&self.payload, true)
+        }
     }
 }
 
-fn expand_len(data: &str) -> usize {
-    let mut min_position = 0;
-    let opening_parens = data
+fn estimate_len(data: &str, recurse: bool) -> usize {
+    let compressors = data
         .chars()
         .enumerate()
         .filter_map(|(pos, chr)| (chr == '(').then(|| pos))
+        .zip(
+            data.chars()
+                .enumerate()
+                .filter_map(|(pos, chr)| (chr == ')').then(|| pos)),
+        )
+        .map(|(inf, sup)| Compressor::new(data, inf, sup))
         .collect::<Vec<_>>();
 
-    let closing_parens = data
-        .chars()
-        .enumerate()
-        .filter_map(|(pos, chr)| (chr == ')').then(|| pos))
-        .collect::<Vec<_>>();
-
-    let mut res = 0;
-    for position in opening_parens {
-        if min_position > position {
-            // res += 0;
-            ()
-        } else {
-            if min_position < position {
-                res += position - min_position;
+    let mut cursor = 0_usize;
+    let mut len = 0;
+    let data: Vec<char> = data.chars().collect();
+    while cursor != data.len() {
+        match data[cursor] {
+            '(' => {
+                let compressor = compressors.iter().find(|c| c.start == cursor).unwrap();
+                len += compressor.len(recurse);
+                cursor = compressor.payload.len() + compressor.end + 1;
             }
-
-            let expander = ExpandLen::new(&data[position..]);
-            res += expander.expand();
-            min_position = position + expander.total_len;
+            _ => {
+                len += 1;
+                cursor += 1;
+            }
         }
     }
-    res += data.len() - min_position;
-    res
+    len
 }
 
 fn main() {
     let data = include_str!("../data/day_2016_9.data");
-    let res: usize = data.lines().map(|line| expand_len(line)).sum();
+    let res: usize = data.lines().map(|line| estimate_len(line, false)).sum();
     println!("Part 1: {}", res);
+    let res2: usize = data.lines().map(|line| estimate_len(line, true)).sum();
+    println!("Part 1: {}", res2);
 }
