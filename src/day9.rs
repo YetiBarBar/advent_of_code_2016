@@ -21,10 +21,10 @@ impl Compressor {
     }
 
     fn len(&self, recurse: bool) -> usize {
-        if !recurse {
-            self.times * self.payload.len()
-        } else {
+        if recurse {
             self.times * estimate_len(&self.payload, true)
+        } else {
+            self.times * self.payload.len()
         }
     }
 }
@@ -33,11 +33,11 @@ fn estimate_len(data: &str, recurse: bool) -> usize {
     let compressors = data
         .chars()
         .enumerate()
-        .filter_map(|(pos, chr)| (chr == '(').then(|| pos))
+        .filter_map(|(pos, chr)| (chr == '(').then_some(pos))
         .zip(
             data.chars()
                 .enumerate()
-                .filter_map(|(pos, chr)| (chr == ')').then(|| pos)),
+                .filter_map(|(pos, chr)| (chr == ')').then_some(pos)),
         )
         .map(|(inf, sup)| Compressor::new(data, inf, sup))
         .collect::<Vec<_>>();
@@ -46,16 +46,13 @@ fn estimate_len(data: &str, recurse: bool) -> usize {
     let mut len = 0;
     let data: Vec<char> = data.chars().collect();
     while cursor != data.len() {
-        match data[cursor] {
-            '(' => {
-                let compressor = compressors.iter().find(|c| c.start == cursor).unwrap();
-                len += compressor.len(recurse);
-                cursor = compressor.payload.len() + compressor.end + 1;
-            }
-            _ => {
-                len += 1;
-                cursor += 1;
-            }
+        if data[cursor] == '(' {
+            let compressor = compressors.iter().find(|c| c.start == cursor).unwrap();
+            len += compressor.len(recurse);
+            cursor = compressor.payload.len() + compressor.end + 1;
+        } else {
+            len += 1;
+            cursor += 1;
         }
     }
     len
