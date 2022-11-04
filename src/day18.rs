@@ -35,19 +35,15 @@ impl Iterator for TrapLine {
 fn main() {
     let trap_line = TrapLine::new(".^^.^^^..^.^..^.^^.^^^^.^^.^^...^..^...^^^..^^...^..^^^^^^..^.^^^..^.^^^^.^^^.^...^^^.^^.^^^.^.^^.^.");
 
-    let res: Vec<String> = trap_line.clone().take(40).collect();
-    assert_eq!(res.len(), 40);
+    println!("Part 1: {}", process(&trap_line, 40));
+    println!("Part 2: {}", process(&trap_line, 400_000));
+}
+
+fn process(trap_line: &TrapLine, iteration: usize) -> usize {
+    let res: Vec<String> = trap_line.clone().take(iteration).collect();
     let count = res
         .iter()
         .map(|line| line.chars().filter(|chr| chr == &'.').count())
         .sum::<usize>();
-    println!("Part 1: {}", count);
-
-    let res2: Vec<String> = trap_line.take(400_000).collect();
-    assert_eq!(res2.len(), 400_000);
-    let count = res2
-        .iter()
-        .map(|line| line.chars().filter(|chr| chr == &'.').count())
-        .sum::<usize>();
-    println!("Part 2: {}", count);
+    count
 }
