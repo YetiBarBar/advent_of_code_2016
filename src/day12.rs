@@ -24,10 +24,10 @@ impl FromStr for Instructions {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let splits: Vec<_> = s.split_ascii_whitespace().collect();
-        match splits[0] {
-            "inc" => Ok(Self::Inc(splits[1].chars().next().unwrap())),
-            "dec" => Ok(Self::Dec(splits[1].chars().next().unwrap())),
-            "cpy" => {
+        match splits.first() {
+            Some(&"inc") => Ok(Self::Inc(splits[1].chars().next().unwrap())),
+            Some(&"dec") => Ok(Self::Dec(splits[1].chars().next().unwrap())),
+            Some(&"cpy") => {
                 let v = if let Ok(int_val) = splits[1].parse::<isize>() {
                     Value::Integer(int_val)
                 } else {
@@ -35,7 +35,7 @@ impl FromStr for Instructions {
                 };
                 Ok(Self::Cpy(v, splits[2].chars().next().unwrap()))
             }
-            "jnz" => {
+            Some(&"jnz") => {
                 let v = if let Ok(int_val) = splits[1].parse::<isize>() {
                     Value::Integer(int_val)
                 } else {
@@ -102,7 +102,7 @@ impl Cpu {
     }
 
     fn run_prog(&mut self) {
-        while let Some(&instr) = self.prog.get(self.eip as usize) {
+        while let Some(&instr) = self.prog.get(usize::try_from(self.eip).unwrap()) {
             self.run_instrcution(&instr);
         }
     }
