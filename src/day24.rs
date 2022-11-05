@@ -118,13 +118,13 @@ fn adjacents(visited: &HashSet<(usize, usize)>, marble: &[Vec<char>]) -> HashSet
 fn bfs(source: (usize, usize), destination: (usize, usize), marble: &[Vec<char>]) -> usize {
     let mut steps = 0_usize;
     let mut visited: HashSet<(usize, usize)> = [source].iter().copied().collect();
-    let mut current: HashSet<(usize, usize)>;
+    let mut current: HashSet<(usize, usize)> = [source].iter().copied().collect();
 
     while !visited.contains(&destination) {
         steps += 1;
-        current = adjacents(&visited, marble);
-        for pts in current {
-            visited.insert(pts);
+        current = adjacents(&current, marble);
+        for pts in &current {
+            visited.insert(*pts);
         }
     }
     steps
