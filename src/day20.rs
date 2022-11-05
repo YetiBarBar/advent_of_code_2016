@@ -1,7 +1,7 @@
 struct Range(u32, u32);
 
 impl Range {
-    fn is_accepted(&self, value: u32) -> bool {
+    fn is_rejected(&self, value: u32) -> bool {
         value >= self.0 && value <= self.1
     }
 }
@@ -15,19 +15,17 @@ fn main() {
         .map(|(min, max)| Range(min.trim().parse().unwrap(), max.trim().parse().unwrap()))
         .collect();
 
-    // for val in 0..=u32::MAX {
-    //     if ranges.iter().all(|range| range.is_accepted(val)) {
-    //         println!("Lowest accpted: {}", val);
-    //         break;
-    //     }
-    // }
+    for val in 0..=u32::MAX {
+        if ranges.iter().all(|range| !range.is_rejected(val)) {
+            println!("Part 1: {}", val);
+            break;
+        }
+    }
 
-    let (min, max) = ranges
-        .iter()
-        .fold((u32::MAX, u32::MIN), |(min, max), range| {
-            (min.min(range.1), max.max(range.1))
-        });
-    // let min_accepted =
+    // Poorly long solution, took 37minutes !
+    let valid_count = (0..=u32::MAX)
+        .filter(|v| ranges.iter().any(|r| !r.is_rejected(*v)))
+        .count();
 
-    println!("Min: {}, Max: {}", min + 1, max + 1);
+    println!("Part 2: {}", valid_count);
 }
