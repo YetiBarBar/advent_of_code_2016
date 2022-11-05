@@ -59,14 +59,14 @@ fn main() {
 
     let res = permuts
         .iter()
-        .map(|permutation| eval_permut(&permutation, &distances, false))
+        .map(|permutation| eval_permut(permutation, &distances, false))
         .min()
         .unwrap();
     println!("Part 1: {}", res);
 
     let res = permuts
         .iter()
-        .map(|permutation| eval_permut(&permutation, &distances, true))
+        .map(|permutation| eval_permut(permutation, &distances, true))
         .min()
         .unwrap();
     println!("Part 2: {}", res);
@@ -88,7 +88,7 @@ fn eval_permut(
         .sum()
 }
 
-fn is_wall(x: usize, y: usize, marble: &Vec<Vec<char>>) -> bool {
+fn is_wall(x: usize, y: usize, marble: &[Vec<char>]) -> bool {
     if let Some(row) = marble.get(y) {
         row.get(x).unwrap_or(&'#') == &'#'
     } else {
@@ -96,10 +96,7 @@ fn is_wall(x: usize, y: usize, marble: &Vec<Vec<char>>) -> bool {
     }
 }
 
-fn adjacents(
-    visited: &HashSet<(usize, usize)>,
-    marble: &Vec<Vec<char>>,
-) -> HashSet<(usize, usize)> {
+fn adjacents(visited: &HashSet<(usize, usize)>, marble: &[Vec<char>]) -> HashSet<(usize, usize)> {
     let mut hset = HashSet::new();
     for &(pos_x, pos_y) in visited {
         if pos_x != 0 && !is_wall(pos_x - 1, pos_y, marble) {
@@ -118,14 +115,14 @@ fn adjacents(
     hset
 }
 
-fn bfs(source: (usize, usize), destination: (usize, usize), marble: &Vec<Vec<char>>) -> usize {
+fn bfs(source: (usize, usize), destination: (usize, usize), marble: &[Vec<char>]) -> usize {
     let mut steps = 0_usize;
     let mut visited: HashSet<(usize, usize)> = [source].iter().copied().collect();
     let mut current: HashSet<(usize, usize)>;
 
     while !visited.contains(&destination) {
         steps += 1;
-        current = adjacents(&visited, &marble);
+        current = adjacents(&visited, marble);
         for pts in current {
             visited.insert(pts);
         }

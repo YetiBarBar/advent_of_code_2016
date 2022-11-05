@@ -140,7 +140,7 @@ impl Cpu {
                     Instructions::Inc(x) => Instructions::Dec(x),
                     Instructions::Tgl(x) | Instructions::Dec(x) => Instructions::Inc(x),
                     Instructions::Jnz(x, y) => Instructions::Cpy(x, y),
-                    _ => panic!(),
+                    Instructions::Out(_) => panic!(),
                 };
                 self.prog[usize::try_from(self.eip + offset).unwrap()] = new;
             };
@@ -156,7 +156,6 @@ impl Cpu {
         self.output.push(value);
         // Arbitrary value!
         if self.output.len() == 500 {
-            println!("Possible candidate!");
             return false;
         }
         self.eip += 1;
@@ -200,17 +199,22 @@ fn main() {
         .map(Result::unwrap)
         .collect::<Vec<_>>();
 
-    for idx in 0..5000 {
-        println!("Index: {} => {:?}", idx, execute(&input, idx));
+    for idx in 0.. {
+        if let Some(v) = execute(&input, idx) {
+            println!("Part 1: {}", v);
+            break;
+        }
     }
-
-    // println!("Part 2: {}", execute(&input, 12));
 }
 
-fn execute(input: &[Instructions], value_a: isize) -> Vec<isize> {
+fn execute(input: &[Instructions], value_a: isize) -> Option<isize> {
     //  println!("Executing: {}", value_a);
     let mut cpu = Cpu::new(input);
     cpu.set_register('a', value_a);
     cpu.run_prog();
-    cpu.output[0..15.min(cpu.output.len())].to_vec()
+    if cpu.output.starts_with(&[0, 1, 0, 1, 0, 1, 0, 1, 0, 1]) {
+        Some(value_a)
+    } else {
+        None
+    }
 }
