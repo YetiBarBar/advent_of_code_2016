@@ -28,12 +28,6 @@ fn main() {
     let input = "00101000101111010";
     println!("Step 1: {}", compute(input, 272));
     println!("Step 2: {}", compute(input, 35_651_584));
-    /*  println!("{}", step("1"));
-    println!("{}", step("0"));
-    println!("{}", step("11111"));
-    println!("{}", step("111100001010"));
-
-    println!("{}", checksum("110010110100")); */
 }
 
 fn compute<T: Into<String>>(data: T, len: usize) -> String {
