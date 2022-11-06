@@ -22,15 +22,21 @@ fn josephus_turn(survivors: &[usize], start: bool) -> (Vec<usize>, bool) {
 }
 
 fn main() {
-    // let players: Vec<usize> = (1..=3_012_210).collect();
-    // need to understand "Josephus problem"
-
     // Part 1:
     let mut start = false;
     let mut survivors: Vec<usize> = (1..=3_012_210).collect();
     while survivors.len() != 1 {
         (survivors, start) = josephus_turn(&survivors, start);
-        // println!("{:?}", survivors);
     }
     println!("Part 1: {}", survivors.first().unwrap());
+
+    // Part 2
+    let target = 3_012_210;
+    let mut i = 1;
+
+    while i * 3 < target {
+        i *= 3;
+    }
+
+    println!("Part 2: {}", target - i);
 }
