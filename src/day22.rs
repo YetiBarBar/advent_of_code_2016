@@ -15,14 +15,12 @@ impl FromStr for Partition {
     type Err = ParseIntError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        // /dev/grid/node-x0-y9     88T   69T    19T   78%
-        // Size  Used  Avail  Use%
         let splits: Vec<_> = s.split_ascii_whitespace().collect();
         let x = splits[0]
             .chars()
             .skip_while(|chr| chr != &'x')
             .skip(1)
-            .take_while(|x| x.is_ascii_digit())
+            .take_while(char::is_ascii_digit)
             .collect::<String>();
 
         let x = x.parse::<usize>()?;
@@ -59,9 +57,11 @@ fn main() {
     let input: Vec<Partition> = include_str!("../data/day_2016_22.data")
         .lines()
         .map(str::parse)
-        .filter(|res| res.is_ok())
+        .filter(Result::is_ok)
         .map(Result::unwrap)
         .collect();
 
     println!("Part 1: {}", viable_pairs(&input));
+
+    // Todo: put BFS code for part 2 (or solve it manually!)
 }

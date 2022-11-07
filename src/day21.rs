@@ -56,15 +56,15 @@ impl FromStr for Instruction {
 
 fn apply_instruction(instruction: &Instruction, line: &[char]) -> Vec<char> {
     match instruction {
-        Instruction::SwapLetter(l1, l2) => swap_letter(line, l1, l2),
+        Instruction::SwapLetter(l1, l2) => swap_letter(line, *l1, *l2),
         Instruction::SwapPosition(p1, p2) => {
-            let mut ret = line.clone().to_vec();
+            let mut ret = line.to_vec();
             ret[*p1] = line[*p2];
             ret[*p2] = line[*p1];
-            ret.to_vec()
+            ret
         }
-        Instruction::RotateLeft(index) => rotate_left(line, index),
-        Instruction::RotateRight(index) => rotate_right(line, index),
+        Instruction::RotateLeft(index) => rotate_left(line, *index),
+        Instruction::RotateRight(index) => rotate_right(line, *index),
         Instruction::RotateBasedPosition(letter) => {
             let mut rotate_index = line
                 .iter()
@@ -74,7 +74,7 @@ fn apply_instruction(instruction: &Instruction, line: &[char]) -> Vec<char> {
                 .0;
             rotate_index += if rotate_index >= 4 { 2 } else { 1 };
             rotate_index %= line.len();
-            rotate_right(line, &rotate_index)
+            rotate_right(line, rotate_index)
         }
         Instruction::Reverse(inf, sup) => {
             //let ret = line.clone();
@@ -86,12 +86,12 @@ fn apply_instruction(instruction: &Instruction, line: &[char]) -> Vec<char> {
             }
             ret
         }
-        Instruction::Move(x, y) => move_position(line, x, y),
+        Instruction::Move(x, y) => move_position(line, *x, *y),
     }
 }
 
-fn move_position(line: &[char], x: &usize, y: &usize) -> Vec<char> {
-    let moved_item = *line.get(*x).unwrap();
+fn move_position(line: &[char], x: usize, y: usize) -> Vec<char> {
+    let moved_item = *line.get(x).unwrap();
     let filtered: Vec<char> = line
         .iter()
         .filter(|chr| chr != &&moved_item)
@@ -100,31 +100,35 @@ fn move_position(line: &[char], x: &usize, y: &usize) -> Vec<char> {
     let mut ret = Vec::with_capacity(line.len());
 
     for position in 0..line.len() {
-        if position == *y {
-            ret.push(moved_item);
-        } else if position < *y {
-            ret.push(filtered[position]);
-        } else {
-            ret.push(filtered[position - 1]);
+        match position.cmp(&y) {
+            std::cmp::Ordering::Less => {
+                ret.push(filtered[position]);
+            }
+            std::cmp::Ordering::Equal => {
+                ret.push(moved_item);
+            }
+            std::cmp::Ordering::Greater => {
+                ret.push(filtered[position - 1]);
+            }
         }
     }
     ret
 }
 
-fn rotate_left(line: &[char], index: &usize) -> Vec<char> {
-    let mut ret = line.clone().to_vec();
-    ret.rotate_left(*index);
+fn rotate_left(line: &[char], index: usize) -> Vec<char> {
+    let mut ret = line.to_vec();
+    ret.rotate_left(index);
     ret
 }
 
-fn rotate_right(line: &[char], index: &usize) -> Vec<char> {
-    let mut ret = line.clone().to_vec();
-    ret.rotate_right(*index);
-    ret.to_vec()
+fn rotate_right(line: &[char], index: usize) -> Vec<char> {
+    let mut ret = line.to_vec();
+    ret.rotate_right(index);
+    ret
 }
-fn swap_letter(line: &[char], l1: &char, l2: &char) -> Vec<char> {
+fn swap_letter(line: &[char], l1: char, l2: char) -> Vec<char> {
     line.iter()
-        .map(|chr| {
+        .map(|&chr| {
             if chr == l1 {
                 l2
             } else if chr == l2 {
@@ -133,7 +137,6 @@ fn swap_letter(line: &[char], l1: &char, l2: &char) -> Vec<char> {
                 chr
             }
         })
-        .copied()
         .collect()
 }
 
