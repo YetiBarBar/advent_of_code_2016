@@ -10,7 +10,7 @@ fn main() {
         })
         .count();
 
-    println!("{}", result);
+    println!("{result}");
 
     let mut v0 = Vec::new();
     let mut v1 = Vec::new();
@@ -34,7 +34,7 @@ fn main() {
         .chunks(3)
         .filter(|chunk| is_triangle((chunk[0], chunk[1], chunk[2])))
         .count();
-    println!("{}", res2);
+    println!("{res2}");
 }
 
 fn line_to_tuple(line: &str) -> (usize, usize, usize) {

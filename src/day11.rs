@@ -240,7 +240,7 @@ impl Display for State {
 
 fn dedup_equivalent_state(input: Vec<State>) -> Vec<State> {
     let mut output = vec![];
-    for item in input.into_iter() {
+    for item in input {
         if output.iter().all(|val: &State| !val.is_equivalent(&item)) {
             output.push(item);
         }
@@ -255,8 +255,8 @@ fn main() {
      * The third floor contains a cobalt-compatible microchip, a curium-compatible microchip, a ruthenium-compatible microchip, and a plutonium-compatible microchip.
      * The fourth floor contains nothing relevant.
      */
-    use Atom::*;
-    use Obj::*;
+    use Atom::{Cobalt, Curium, Dilirium, Elerium, Plutonium, Promethium, Ruthenium};
+    use Obj::{Generator, Microchip};
     let initial_state = State {
         level_1: [Generator(Promethium), Microchip(Promethium)]
             .iter()
@@ -293,19 +293,19 @@ fn main() {
         steps += 1;
         current = current
             .iter()
-            .flat_map(|state| state.next_possible_state())
+            .flat_map(State::next_possible_state)
             .collect();
 
         current = dedup_equivalent_state(current);
 
-        if current.iter().any(|state| state.is_winning()) {
+        if current.iter().any(State::is_winning) {
             break;
         }
     }
 
     // TODO: Find error, I have 35 instead of 33...
     println!("There is an error for part 1...");
-    println!("Part 1: {}", steps);
+    println!("Part 1: {steps}");
 
     let initial_state_2 = State {
         level_1: [
@@ -350,15 +350,15 @@ fn main() {
         steps += 1;
         current = current
             .iter()
-            .flat_map(|state| state.next_possible_state())
+            .flat_map(State::next_possible_state)
             .collect();
 
         current = dedup_equivalent_state(current);
 
-        if current.iter().any(|state| state.is_winning()) {
+        if current.iter().any(State::is_winning) {
             break;
         }
     }
 
-    println!("Part 2: {}", steps);
+    println!("Part 2: {steps}");
 }

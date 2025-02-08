@@ -12,7 +12,7 @@ impl FromStr for PacketV7 {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut fields = Vec::new();
         let mut fields_abba = Vec::new();
-        for (parity, part) in s.split(|chr| chr == '[' || chr == ']').enumerate() {
+        for (parity, part) in s.split(['[', ']']).enumerate() {
             if parity % 2 == 0 {
                 fields.push(part.to_string());
             } else {
@@ -64,7 +64,7 @@ pub fn main() {
         .map(Result::unwrap)
         .filter(PacketV7::is_tls)
         .count();
-    println!("Step 1: {}", res);
+    println!("Step 1: {res}");
 
     let res2 = input
         .lines()
@@ -72,5 +72,5 @@ pub fn main() {
         .map(Result::unwrap)
         .filter(PacketV7::is_ssl)
         .count();
-    println!("Step 2: {}", res2);
+    println!("Step 2: {res2}");
 }

@@ -61,7 +61,7 @@ fn estimate_len(data: &str, recurse: bool) -> usize {
 fn main() {
     let data = include_str!("../data/day_2016_9.data");
     let res: usize = data.lines().map(|line| estimate_len(line, false)).sum();
-    println!("Part 1: {}", res);
+    println!("Part 1: {res}");
     let res2: usize = data.lines().map(|line| estimate_len(line, true)).sum();
-    println!("Part 1: {}", res2);
+    println!("Part 1: {res2}");
 }

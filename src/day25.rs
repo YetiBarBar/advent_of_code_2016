@@ -201,7 +201,7 @@ fn main() {
 
     for idx in 0.. {
         if let Some(v) = execute(&input, idx) {
-            println!("Part 1: {}", v);
+            println!("Part 1: {v}");
             break;
         }
     }

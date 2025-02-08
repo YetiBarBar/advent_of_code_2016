@@ -21,9 +21,9 @@ pub fn main() {
     }
 
     let result = v.iter().map(get_max).collect::<String>();
-    println!("{}", result);
+    println!("{result}");
     let result2 = v.iter().map(get_min).collect::<String>();
-    println!("{}", result2);
+    println!("{result2}");
 }
 
 fn get_max(hmap: &HashMap<char, usize>) -> char {

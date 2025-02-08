@@ -32,5 +32,5 @@ fn main() {
         }
     }
 
-    println!("Part 1: {}", steps);
+    println!("Part 1: {steps}");
 }

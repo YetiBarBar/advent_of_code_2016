@@ -27,7 +27,7 @@ fn main() {
         })
         .collect();
 
-    println!("Points: {:?}", points);
+    println!("Points: {points:?}");
 
     let mut distances = HashMap::new();
     // Compute all distance between points
@@ -62,14 +62,14 @@ fn main() {
         .map(|permutation| eval_permut(permutation, &distances, false))
         .min()
         .unwrap();
-    println!("Part 1: {}", res);
+    println!("Part 1: {res}");
 
     let res = permuts
         .iter()
         .map(|permutation| eval_permut(permutation, &distances, true))
         .min()
         .unwrap();
-    println!("Part 2: {}", res);
+    println!("Part 2: {res}");
 }
 
 fn eval_permut(

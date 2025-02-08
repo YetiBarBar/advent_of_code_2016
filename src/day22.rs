@@ -56,9 +56,7 @@ fn viable_pairs(partitions: &[Partition]) -> usize {
 fn main() {
     let input: Vec<Partition> = include_str!("../data/day_2016_22.data")
         .lines()
-        .map(str::parse)
-        .filter(Result::is_ok)
-        .map(Result::unwrap)
+        .flat_map(str::parse)
         .collect();
 
     println!("Part 1: {}", viable_pairs(&input));

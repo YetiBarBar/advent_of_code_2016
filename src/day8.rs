@@ -59,7 +59,7 @@ impl AocDisplay {
 
 impl Display for AocDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut result = String::from("");
+        let mut result = String::new();
         for row in self.field {
             for point in row {
                 if point {
@@ -70,7 +70,7 @@ impl Display for AocDisplay {
             }
             result.push('\n');
         }
-        write!(f, "{}", result)
+        write!(f, "{result}")
     }
 }
 
@@ -107,7 +107,7 @@ impl FromStr for Command {
             let val = splits[4].parse().unwrap();
             return Ok(Self::RotateCol(col, val));
         }
-        println!("Wrong line: {}", s);
+        println!("Wrong line: {s}");
         Err(())
     }
 }
@@ -124,5 +124,5 @@ fn main() {
     disp.run_cmd(&commands);
     println!("Part 1: {}", disp.count_pixels_on());
     println!("For part 2, need to read this:");
-    println!("{}", disp);
+    println!("{disp}");
 }

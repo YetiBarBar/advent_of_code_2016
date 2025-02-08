@@ -149,7 +149,7 @@ fn main() {
 
     let base_password = "abcdefgh".chars().collect::<Vec<char>>();
     let encoded = encoder(&base_password, instructions.clone());
-    println!("Part 1: {}", encoded);
+    println!("Part 1: {encoded}");
 
     let permuts: Vec<_> = base_password.iter().permutations(8).collect();
     for permut in permuts {

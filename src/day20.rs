@@ -17,7 +17,7 @@ fn main() {
 
     for val in 0..=u32::MAX {
         if ranges.iter().all(|range| !range.is_rejected(val)) {
-            println!("Part 1: {}", val);
+            println!("Part 1: {val}");
             break;
         }
     }
@@ -27,5 +27,5 @@ fn main() {
         .filter(|v| ranges.iter().any(|r| !r.is_rejected(*v)))
         .count();
 
-    println!("Part 2: {}", valid_count);
+    println!("Part 2: {valid_count}");
 }

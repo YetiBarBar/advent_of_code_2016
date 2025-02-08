@@ -80,9 +80,9 @@ fn main() {
     let mut opt_gen = OtpGen::new(seed, false);
     // 63 because we need to count 0!
     let res = opt_gen.nth(63).unwrap();
-    println!("Part 1: {}", res);
+    println!("Part 1: {res}");
 
     let mut opt_gen2 = OtpGen::new(seed, true);
     let res2 = opt_gen2.nth(63).unwrap();
-    println!("Part 2: {}", res2);
+    println!("Part 2: {res2}");
 }
