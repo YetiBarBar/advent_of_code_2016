@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use std::{collections::HashSet, fmt::Display};
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Copy)]
 enum Atom {
     Promethium,
     Cobalt,
@@ -30,8 +30,7 @@ impl Obj {
 
     fn get_kind(&self) -> Atom {
         match self {
-            Obj::Generator(v) => v.clone(),
-            Obj::Microchip(v) => v.clone(),
+            Obj::Generator(v) | Obj::Microchip(v) => *v,
         }
     }
 }
@@ -229,11 +228,8 @@ impl Display for State {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "{}",
-            format!(
-                "Elevator : {}\n4: {:?}\n3: {:?}\n2: {:?}\n1:{:?}",
-                self.elevator_position, self.level_4, self.level_3, self.level_2, self.level_1
-            )
+            "Elevator : {}\n4: {:?}\n3: {:?}\n2: {:?}\n1:{:?}",
+            self.elevator_position, self.level_4, self.level_3, self.level_2, self.level_1
         )
     }
 }
@@ -284,8 +280,7 @@ fn main() {
         elevator_position: 1,
     };
 
-    let mut current = Vec::new();
-    current.push(initial_state.clone());
+    let mut current = vec![initial_state.clone()];
 
     let mut steps = 0;
 
@@ -341,8 +336,7 @@ fn main() {
         elevator_position: 1,
     };
 
-    let mut current = Vec::new();
-    current.push(initial_state_2.clone());
+    let mut current = vec![initial_state_2.clone()];
 
     let mut steps = 0;
 
